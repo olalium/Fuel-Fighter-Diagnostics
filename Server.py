@@ -1,6 +1,6 @@
 import SocketServer
 
-class MyTCPHandler(socketserver.BaseRequestHandler):
+class MyTCPHandler(SocketServer.BaseRequestHandler):
     """
     The RequestHandler class for our server.
 
@@ -18,10 +18,10 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         self.request.sendall(bytes(self.data.upper(), 'ascii'))
 
 if __name__ == "__main__":
-    HOST, PORT = "10.22.27.156", 800
+    HOST, PORT = "37.187.53.31", 800
 
     # Create the server, binding to localhost on port 9999
-    server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+    server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
 
     # Activate the server; this will keep running until you
     # interrupt the program with Ctrl-C
