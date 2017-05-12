@@ -15,7 +15,6 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         print("{} wrote:".format(self.client_address[0]))
         print(self.data)
         # just send back the same data, but upper-cased
-        self.request.sendall(bytes(self.data.upper(), 'ascii'))
 
 if __name__ == "__main__":
     HOST, PORT = "37.187.53.31", 800
