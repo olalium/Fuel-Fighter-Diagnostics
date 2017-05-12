@@ -13,7 +13,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         self.data = str(self.request.recv(1024)).strip("b'")
         print("{} wrote:".format(self.client_address[0]))
-        print(str(self.data))
+        print(self.data)
         # just send back the same data, but upper-cased
         self.request.sendall(bytes(self.data.upper(), 'ascii'))
 
