@@ -1,27 +1,56 @@
+# -*- coding: utf-8 -*-
 import SocketServer
 
-class MyTCPHandler(SocketServer.BaseRequestHandler):
-    """
-    The RequestHandler class for our server.
+"""
+Variables and functions that must be used by all the ClientHandler objects
+must be written here (e.g. a dictionary for connected clients)
+"""
+clients={}
 
-    It is instantiated once per connection to the server, and must
-    override the handle() method to implement communication to the
-    client.
+class ClientHandler(SocketServer.BaseRequestHandler):
+    """
+    This is the ClientHandler class. Everytime a new client connects to the
+    server, a new ClientHandler object will be created. This class represents
+    only connected clients, and not the server itself. If you want to write
+    logic for the server, you must write it outside this class
     """
 
     def handle(self):
-        # self.request is the TCP socket connected to the client
-        self.data = str(self.request.recv(1024)).strip("b'")
-        print("{} wrote:".format(self.client_address[0]))
-        print(self.data)
-        # just send back the same data, but upper-cased
+        """
+        This method handles the connection between a client and the server.login
+        """
+        self.ip = self.client_address[0]
+        self.port = self.client_address[1]
+        self.connection = self.request
+        global clients
+        clients[self] = self.ip
+    
+        # Loop that listens for messages from the client
+        while True:
+            recieved_string = self.connection.recv(4096)
+            for client in clients:
+                if client is not clients[self]:
+                    client.connection.sendall(recieved_string)
+
+class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+    """
+    This class is present so that each client connected will be ran as a own
+    thread. In that way, all clients will be served by the server.
+
+    No alterations are necessary
+    """
+    allow_reuse_address = True
 
 if __name__ == "__main__":
-    HOST, PORT = "37.187.53.31", 800
+    """
+    This is the main method and is executed when you type "python Server.py"
+    in your terminal.
 
-    # Create the server, binding to localhost on port 9999
-    server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
+    No alterations are necessary
+    """
+    HOST, PORT = '37.187.53.31', 800
+    print ('Server running...')
 
-    # Activate the server; this will keep running until you
-    # interrupt the program with Ctrl-C
+    # Set up and initiate the TCP server
+    server = ThreadedTCPServer((HOST, PORT), ClientHandler)
     server.serve_forever()
