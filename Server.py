@@ -27,10 +27,16 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     
         # Loop that listens for messages from the client
         while True:
-            recieved_string = self.connection.recv(4096)
-            for client in clients:
-                if client is not clients[self]:
-                    client.connection.sendall(recieved_string)
+            try:
+                recieved_string = self.connection.recv(4096)
+                for client in clients:
+                    if client is not clients[self]:
+                        client.connection.sendall(recieved_string)
+            except:
+                print("connection closed.")
+                self.connection.close()
+                clients.pop(self,None)
+                break
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     """
@@ -48,7 +54,7 @@ if __name__ == "__main__":
 
     No alterations are necessary
     """
-    HOST, PORT = '37.187.53.31', 800
+    HOST, PORT = 'localhost', 800
     print ('Server running...')
 
     # Set up and initiate the TCP server
