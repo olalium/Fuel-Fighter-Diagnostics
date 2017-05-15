@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     No alterations are necessary
     """
-    HOST, PORT = 'localhost', 800
+    HOST, PORT = '37.187.53.31', 800
     print ('Server running...')
 
     # Set up and initiate the TCP server
